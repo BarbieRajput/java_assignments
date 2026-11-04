@@ -61,7 +61,8 @@ public class Main {
 
     static void insert() {
         System.out.print("Enter position: ");
-        int pos = Integer.parseInt(sc.nextLine());
+        int pos = sc.nextInt();
+        sc.nextLine();
 
         if (pos < 1)
             throw new IllegalArgumentException("Invalid position");
@@ -93,11 +94,11 @@ public class Main {
 
         if (t == null)
             throw new IllegalArgumentException("Position not found");
-
         n.next = t.next;
         t.next = n;
         System.out.println("Member inserted");
     }
+    
 
     static void delete() {
         System.out.print("Enter ID to delete: ");
@@ -109,20 +110,21 @@ public class Main {
         if (head.id == id) {
             head = head.next;
             System.out.println("Member deleted");
-            return;
+            
         }
-
-        Member t = head;
-
-        while (t.next != null && t.next.id != id)
-            t = t.next;
-
-        if (t.next == null)
-            throw new NoSuchElementException("Member not found");
-
-        t.next = t.next.next;
-        System.out.println("Member deleted");
     }
+
+    //     Member t = head;
+
+    //     while (t.next != null && t.next.id != id)
+    //         t = t.next;
+
+    //     if (t.next == null)
+    //         throw new NoSuchElementException("Member not found");
+
+    //     t.next = t.next.next;
+    //     System.out.println("Member deleted");}
+    
 
     static void update() {
         System.out.print("Enter ID to update: ");

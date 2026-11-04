@@ -25,16 +25,16 @@ public class Subset {
 		for (int i = 0; i <= n; i++) {
 			d[i][0] = true;
 		}
-		 for(int i = 1; i<=n ; i++) {
-			 for(int j =0; j<= target; j++) {
-				 d[i][j] = d[i-1][j];
-				 if(a[i-1]<= j)
-					 d[i][j] =d[i - 1][j] || d[i-1][j-a[i-1]];
-			 
-			 
-				 }
-		 }
-		  return d[n][target];
+		for(int i = 1; i<=n ; i++) {
+			for(int j =0; j<= target; j++) {
+				d[i][j] = d[i-1][j];
+if(a[i-1]<= j)
+					d[i][j] =d[i - 1][j] || d[i-1][j-a[i-1]];
+			
+			
+				}
+		}
+		return d[n][target];
 	}
 	
 	

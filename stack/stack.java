@@ -1,122 +1,144 @@
-package stack;
-import java.util.*;
-
+package DS_ESE;
+import java.util{}
 class MyStack {
     int a[];
     int top = -1;
-
-    MyStack(int size) {
+    MyStack(int size){
         a = new int[size];
     }
-
     void push(int x) {
-        if (top == a.length - 1)
-            throw new RuntimeException("Stack Overflow");
+        if(top == a.length - 1)
+            throw new RuntimeException("Stack overflow");
         a[++top] = x;
     }
-
+    
     int pop() {
-        if (top == -1)
+        if(top == -1)
             throw new RuntimeException("Stack Underflow");
         return a[top--];
     }
-
+    
     boolean isEmpty() {
         return top == -1;
     }
-
+    
     int size() {
         return top + 1;
     }
 }
 
-public class stack {
+public class Stack {
 
-    static int evaluate(String expr) {
-        String t[] = expr.trim().split("\\s+");
-        MyStack s = new MyStack(t.length);
-
-        for (String x : t) {
-            if (x.matches("-?\\d+")) {
-                s.push(Integer.parseInt(x));
+    // Evaluate Postfix Expression (Simpler approach supporting multi-digit numbers)
+    static int evalutePostfix(String exp) {
+        MyStack s = new MyStack(100);
+        int i = 0;
+        int n = exp.length();
+        
+        while(i < n) {
+            char ch = exp.charAt(i);
+            
+            if(ch == ' ') {
+                i++;
+                continue;
+            }
+            
+            if(Character.isDigit(ch)) {    
+                int num = 0;
+                while(i < n && Character.isDigit(exp.charAt(i))) {
+                    num = num * 10 + (exp.charAt(i) - '0');
+                    i++;
+                } 
+                s.push(num);
+                continue;
             } else {
-                int b = s.pop();
-                int a = s.pop();
-
-                switch (x) {
-                    case "+": s.push(a + b); break;
-                    case "-": s.push(a - b); break;
-                    case "*": s.push(a * b); break;
-                    case "/":
-                        if (b == 0)
-                            throw new ArithmeticException("Division by zero");
-                        s.push(a / b);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid operator");
+                // Otherwise it's an operator
+                if(s.size() < 2) {
+                    System.out.println("Invalid Expression: Insufficient operands.");
+                    return -1;
                 }
+                int operand2 = s.pop();
+                int operand1 = s.pop();
+                int result;
+                
+                switch(ch) {
+                    case '+': result = operand1 + operand2; break;
+                    case '-': result = operand1 - operand2; break;
+                    case '*': result = operand1 * operand2; break;
+                    case '/': 
+                        if(operand2 == 0) {
+                            System.out.println("Division by zero error.");
+                            return -1;
+                        }
+                        result = operand1 / operand2; 
+                        break;
+                    default: 
+                        System.out.println("Invalid operator.");
+                        return -1;
+                } 
+                s.push(result);
+                i++;
             }
         }
-
-        if (s.size() != 1)
-            throw new IllegalArgumentException("Invalid postfix expression");
-
-        return s.pop();
+        return s.pop();    
     }
-
+    
+    // Reverse String 
+    static String reverse(String str) {
+        MyStack s = new MyStack(str.length() > 0 ? str.length() : 1);
+        
+        // Push every character
+        for(int i = 0; i < str.length(); i++) {
+            s.push(str.charAt(i));
+        }
+        
+        String result = "";
+        
+        // Pop every element 
+        while(!s.isEmpty()) {
+            result = result + (char) s.pop();    
+        }
+        return result;
+    }
+    
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int choice = 0;
-
-        do {
-            try {
-                System.out.println("\n1. Reverse String");
-                System.out.println("2. Evaluate Postfix");
+        try {
+            int choice;
+            do {
+                System.out.println("\n--- Menu ---");
+                System.out.println("1. Evaluate Postfix Expression");
+                System.out.println("2. Reverse String");
                 System.out.println("3. Exit");
-                System.out.print("Enter choice: ");
-
-                choice = sc.nextInt();
-                sc.nextLine();
+                System.out.print("Enter your choice: ");
+                choice = Integer.parseInt(sc.nextLine().trim());
 
                 switch (choice) {
                     case 1:
-                        System.out.print("Enter string: ");
-                        String str = sc.nextLine();
-
-                        MyStack s = new MyStack(str.length());
-                        for (int i = 0; i < str.length(); i++)
-                            s.push(str.charAt(i));
-
-                        System.out.print("Reversed string: ");
-                        while (!s.isEmpty())
-                            System.out.print((char) s.pop());
-
-                        System.out.println();
+                        System.out.print("Enter postfix expression (e.g., 5 3 + 2 *): ");
+                        String exp = sc.nextLine();
+                        int result = evalutePostfix(exp);
+                        if (result != -1) {
+                            System.out.println("Result: " + result);
+                        }
                         break;
-
                     case 2:
-                        System.out.print("Enter postfix expression: ");
-                        String expr = sc.nextLine();
-                        System.out.println("Result: " + evaluate(expr));
+                        System.out.print("Enter string to reverse: ");
+                        String str = sc.nextLine();
+                        String reversed = reverse(str);
+                        System.out.println("Reversed String: " + reversed);
                         break;
-
                     case 3:
-                        System.out.println("Exiting...");
+                        System.out.println("Exiting the program...");
                         break;
-
                     default:
-                        System.out.println("Invalid choice");
+                        System.out.println("Invalid choice...");
                 }
-
-            } catch (InputMismatchException e) {
-                System.out.println("Error: Enter a valid integer choice.");
-                sc.nextLine();
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-
-        } while (choice != 3);
-
-        sc.close();
+            } while (choice != 3);
+        } catch (Exception e) {
+            System.out.println("Invalid input or error has occurred... " + e.getMessage());
+        } finally {
+            sc.close();
+        }
     }
-}
+}//NOT TODAY
